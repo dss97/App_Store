@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <!--主程序对应的配置文件-->
+    <!--主程序对应的配置文件-->
+    <!--主程序对应的配置文件-->
+    <!--主程序对应的配置文件-->
+    <!--主程序对应的配置文件-->
+    <!--主程序对应的配置文件-->
+
+    <!--开启bean注解扫描-->
+    <context:component-scan base-package="cn.dou">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <!--开启注解式事务-->
+    <tx:annotation-driven transaction-manager="txManager"/>
+
+    <!--加载properties文件,也可以直接写进来-->
+    <context:property-placeholder location="classpath*:jdbc.properties"/>
+
+    <!--静态文件放行和映射,可配置多个-->
+    <mvc:resources mapping="/images/**" location="/WEB-INF/images/"/>
+
+    <!--Mysql数据源-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+
+    <!--整合mybatis到spring中,对实体类起别名-->
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="typeAliasesPackage" value="cn.dou.po"/>
+    </bean>
+
+    <!--映射扫描,扫描mapper文件包.xml文件-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="cn.dou.dao"/>
+    </bean>
+
+    <!--事务管理器-->
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+</beans>
